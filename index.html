@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle de Estoque - Limpeza</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Controle de Estoque - Materiais de Limpeza</h1>
+
+    <form id="estoque-form">
+      <input type="text" id="nome" placeholder="Nome do produto" required>
+      <input type="number" id="quantidade" placeholder="Quantidade" required>
+      <select id="categoria">
+        <option>Desinfetante</option>
+        <option>Sabão</option>
+        <option>Papel</option>
+        <option>Outros</option>
+      </select>
+      <button type="submit">Adicionar</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th>Categoria</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="estoque-lista"></tbody>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
