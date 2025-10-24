@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,16 +13,28 @@ interface Product {
   price: number;
 }
 
+const STORAGE_KEY = 'inventory-products';
+
 function App() {
-  const [products, setProducts] = useState<Product[]>([
-    { id: 1, name: 'Notebook', quantity: 10, price: 3500.00 },
-    { id: 2, name: 'Mouse', quantity: 50, price: 89.90 },
-    { id: 3, name: 'Teclado', quantity: 30, price: 120.50 },
-  ]);
+  const [products, setProducts] = useState<Product[]>(() => {
+    const storedProducts = localStorage.getItem(STORAGE_KEY);
+    if (storedProducts) {
+      return JSON.parse(storedProducts);
+    }
+    return [
+      { id: 1, name: 'Notebook', quantity: 10, price: 3500.00 },
+      { id: 2, name: 'Mouse', quantity: 50, price: 89.90 },
+      { id: 3, name: 'Teclado', quantity: 30, price: 120.50 },
+    ];
+  });
 
   const [productName, setProductName] = useState('');
   const [productQuantity, setProductQuantity] = useState('');
   const [productPrice, setProductPrice] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+  }, [products]);
 
   const handleAddProduct = (event: FormEvent) => {
     event.preventDefault();
