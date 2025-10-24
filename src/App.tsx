@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,39 @@ function App() {
     { id: 3, name: 'Teclado', quantity: 30, price: 120.50 },
   ]);
 
+  const [productName, setProductName] = useState('');
+  const [productQuantity, setProductQuantity] = useState('');
+  const [productPrice, setProductPrice] = useState('');
+
+  const handleAddProduct = (event: FormEvent) => {
+    event.preventDefault();
+
+    const quantity = parseInt(productQuantity, 10);
+    const price = parseFloat(productPrice);
+
+    if (productName && !isNaN(quantity) && quantity > 0 && !isNaN(price) && price > 0) {
+      const newProduct: Product = {
+        id: Date.now(), // Simple unique ID
+        name: productName,
+        quantity,
+        price,
+      };
+
+      setProducts([...products, newProduct]);
+
+      // Reset form fields
+      setProductName('');
+      setProductQuantity('');
+      setProductPrice('');
+    } else {
+      alert('Por favor, preencha todos os campos corretamente.');
+    }
+  };
+
+  const handleDeleteProduct = (productId: number) => {
+    setProducts(products.filter(product => product.id !== productId));
+  };
+
   return (
     <main className="container mx-auto p-4">
       <header className="my-8">
@@ -34,20 +67,38 @@ function App() {
               <CardDescription>Preencha os dados para cadastrar um novo item.</CardDescription>
             </CardHeader>
             <CardContent>
-              <form className="space-y-4">
+              <form onSubmit={handleAddProduct} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Nome</Label>
-                  <Input id="name" placeholder="Nome do produto" />
+                  <Input
+                    id="name"
+                    placeholder="Nome do produto"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="quantity">Quantidade</Label>
-                  <Input id="quantity" type="number" placeholder="0" />
+                  <Input
+                    id="quantity"
+                    type="number"
+                    placeholder="0"
+                    value={productQuantity}
+                    onChange={(e) => setProductQuantity(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="price">Preço (R$)</Label>
-                  <Input id="price" type="number" placeholder="0.00" />
+                  <Input
+                    id="price"
+                    type="number"
+                    placeholder="0.00"
+                    step="0.01"
+                    value={productPrice}
+                    onChange={(e) => setProductPrice(e.target.value)}
+                  />
                 </div>
-                <Button className="w-full">
+                <Button type="submit" className="w-full">
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Adicionar
                 </Button>
@@ -81,7 +132,7 @@ function App() {
                         {product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" onClick={() => handleDeleteProduct(product.id)}>
                           <Trash2 className="h-4 w-4 text-red-500" />
                         </Button>
                       </TableCell>
